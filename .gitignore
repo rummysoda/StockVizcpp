@@ -1,4 +1,6 @@
 cmake-build-debug/apikey.txt
 documentation.md
 cmake-build-debug
-.idea
+/.idea
+.gitattributes
+CMakeLists.txt
