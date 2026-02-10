@@ -4,7 +4,7 @@ Dependencies:
 - https://github.com/nlohmann/json
 - https://github.com/boostorg/beast
 - https://github.com/openssl/openssl
-
+```
 .
 ├── CMakeLists.txt
 ├── docs
@@ -20,3 +20,4 @@ Dependencies:
 ├── websocketclient.h
 ├── window.cpp
 └── window.h
+```
