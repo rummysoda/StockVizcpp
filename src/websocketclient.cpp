@@ -60,7 +60,6 @@ void FinnhubWS::subscribe(const std::string& symbol) {
     if (!ws_) return;
 
     std::string message = R"({"type":"subscribe","symbol":")" + symbol + R"("})";
-    std::cout << message << std::endl;
     ws_->write(net::buffer(message));
     std::cout << "Subscribed to " << symbol << std::endl;
 }

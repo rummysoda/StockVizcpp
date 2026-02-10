@@ -6,11 +6,11 @@ set(CMAKE_CXX_COMPILER "C:/msys64/mingw64/bin/g++.exe")
 project(stockvizcpp)
 
 set(CMAKE_CXX_STANDARD 17)
-
 set(CMAKE_PREFIX_PATH "C:/msys64/mingw64")
 
-set(BOOST_ROOT "${CMAKE_SOURCE_DIR}/beast/boost")
+set(BOOST_ROOT "${CMAKE_SOURCE_DIR}/external/beast/boost")
 include_directories(${BOOST_ROOT})
+
 
 set(OPENSSL_ROOT_DIR "C:/msys64/mingw64")
 set(OPENSSL_INCLUDE_DIR "C:/msys64/mingw64/include")
@@ -19,19 +19,20 @@ set(OPENSSL_SSL_LIBRARY "C:/msys64/mingw64/lib/libssl.dll.a")
 
 find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 
-add_executable(stockvizcpp
-        main.cpp
-        window.cpp
-        window.h
-        apiclient.cpp
-        apiclient.h
-        websocketclient.cpp
-        websocketclient.h
+include_directories(
+        ${CMAKE_SOURCE_DIR}/src
+        ${OPENSSL_INCLUDE_DIR}
+        C:/msys64/mingw64/include
 )
 
-target_include_directories(stockvizcpp PRIVATE
-        ${OPENSSL_INCLUDE_DIR}
-        C:/msys64/mingw64/include  # ← ADD THIS LINE for nlohmann/json
+add_executable(stockvizcpp
+        src/main.cpp
+        src/window.cpp
+        src/window.h
+        src/apiclient.cpp
+        src/apiclient.h
+        src/websocketclient.cpp
+        src/websocketclient.h
 )
 
 target_link_libraries(stockvizcpp
@@ -41,7 +42,6 @@ target_link_libraries(stockvizcpp
         sfml-system
         ${OPENSSL_SSL_LIBRARY}
         ${OPENSSL_CRYPTO_LIBRARY}
-        # Boost::json  ← REMOVE THIS LINE
         opengl32
         winmm
         gdi32
