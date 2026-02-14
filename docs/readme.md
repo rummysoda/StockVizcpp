@@ -4,6 +4,9 @@ Dependencies:
 - https://github.com/nlohmann/json
 - https://github.com/boostorg/beast
 - https://github.com/openssl/openssl
+- https://github.com/ocornut/imgui
+- https://github.com/epezent/implot
+- https://github.com/SFML/imgui-sfml
 ```
 .
 ├── CMakeLists.txt
@@ -12,6 +15,9 @@ Dependencies:
 │   └── readme.md
 ├── external
 │   └── beast
+│   └── imgui
+│   └── imgui-sfml
+│   └── implot
 └── src
 ├── apiclient.cpp
 ├── apiclient.h
