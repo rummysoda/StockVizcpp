@@ -11,7 +11,6 @@ set(CMAKE_PREFIX_PATH "C:/msys64/mingw64")
 set(BOOST_ROOT "${CMAKE_SOURCE_DIR}/external/beast/boost")
 include_directories(${BOOST_ROOT})
 
-
 set(OPENSSL_ROOT_DIR "C:/msys64/mingw64")
 set(OPENSSL_INCLUDE_DIR "C:/msys64/mingw64/include")
 set(OPENSSL_CRYPTO_LIBRARY "C:/msys64/mingw64/lib/libcrypto.dll.a")
@@ -25,6 +24,17 @@ include_directories(
         C:/msys64/mingw64/include
 )
 
+set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui)
+add_subdirectory(external/imgui-sfml)
+
+add_library(implot STATIC
+        external/implot/implot.cpp
+        external/implot/implot_items.cpp
+        external/implot/implot_demo.cpp
+)
+target_include_directories(implot PUBLIC external/implot)
+target_link_libraries(implot PUBLIC ImGui-SFML::ImGui-SFML)
+
 add_executable(stockvizcpp
         src/main.cpp
         src/window.cpp
@@ -37,6 +47,8 @@ add_executable(stockvizcpp
 
 target_link_libraries(stockvizcpp
         PRIVATE
+        ImGui-SFML::ImGui-SFML
+        implot
         sfml-graphics
         sfml-window
         sfml-system

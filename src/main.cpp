@@ -23,7 +23,6 @@ int main() {
         std::cout << "WebSocket connected, checking stocks..." << std::endl;
         client.startReading();
 
-        // Run the window
         runWindow();
 
         std::cout << "Window closed, exiting..." << std::endl;
