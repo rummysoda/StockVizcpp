@@ -3,3 +3,4 @@ documentation.md
 cmake-build-debug
 /.idea
 /__pycache__
+/external/implot

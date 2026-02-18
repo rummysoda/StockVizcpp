@@ -13,15 +13,15 @@ Dependencies:
 │   └── readme.md
 ├── external
 │   └── beast
-├── src
-├── apiclient.cpp
-├── apiclient.h
-├── fetcher.py
-├── main.cpp
-├── stocksgui.cpp
-├── stocksgui.h
-├── websocketclient.cpp
-├── websocketclient.h
-├── window.cpp
-└── window.h
+└── src
+    ├── apiclient.cpp
+    ├── apiclient.h
+    ├── fetcher.py
+    ├── main.cpp
+    ├── stocksgui.cpp
+    ├── stocksgui.h
+    ├── websocketclient.cpp
+    ├── websocketclient.h
+    ├── window.cpp
+    └── window.h
 ```
