@@ -7,6 +7,8 @@
 #include "imgui-SFML.h"
 #include "implot.h"
 
+#include "stocksgui.h"
+
 void runWindow()
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1000), "Stock Visualizer");
@@ -44,15 +46,18 @@ void runWindow()
         ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
         ImGui::End();
 
+
         // implot test
-        ImGui::Begin("Plot Test");
+        /* ImGui::Begin("Plot Test");
         if (ImPlot::BeginPlot("Sample Plot")) {
             static float xs[] = {0,1,2,3,4};
             static float ys[] = {0,1,4,9,16};
             ImPlot::PlotLine("y = x^2", xs, ys, 5);
             ImPlot::EndPlot();
         }
-        ImGui::End();
+        ImGui::End(); */
+
+        Demo_CustomPlottersAndTooltips();
 
         //render
 
