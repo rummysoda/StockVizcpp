@@ -45,6 +45,7 @@ add_executable(stockvizcpp
         src/websocketclient.h
         src/stocksgui.cpp
         src/stocksgui.h
+        src/TextButton.h
 )
 
 target_link_libraries(stockvizcpp
