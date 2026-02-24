@@ -3,6 +3,9 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Font.hpp>
+
+#include "AddButton.h"
+#include "CloseButton.h"
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "implot.h"
@@ -11,7 +14,7 @@
 
 
 void runWindow() {   //style none gets rid of titlebar sf::Style::None
-    sf::RenderWindow window(sf::VideoMode(1920, 1000), "Stock Visualizer");
+    sf::RenderWindow window(sf::VideoMode(2560, 1440), "Stock Visualizer");
     ImGui::SFML::Init(window);
     ImPlot::CreateContext();
 
@@ -20,6 +23,8 @@ void runWindow() {   //style none gets rid of titlebar sf::Style::None
     font.loadFromFile("pt-root-ui_vf.ttf");
 
     std::vector<TextButton*> buttonVec;
+    std::vector<CloseButton*> closeVec;
+    std::vector<AddButton*> addVec;
     float keyTimeMax = 1000.f;
     float keyTime = keyTimeMax;
 
@@ -84,13 +89,19 @@ void runWindow() {   //style none gets rid of titlebar sf::Style::None
         {
             float xx;
             float yy;
-            xx = 1500 + buttonVec.size();
-            yy = 150 + buttonVec.size() * 100;
+            xx = 1500;
+            yy = 150 + buttonVec.size() * 50;
+            float Cx = xx + 200;
+            float Ax = xx + 150;
             buttonVec.push_back(new TextButton(xx,yy));
+            closeVec.push_back(new CloseButton(Cx,yy));
+            addVec.push_back(new AddButton(Ax,yy));
         }
 
         for (size_t i = 0; i < buttonVec.size(); i++) {
             buttonVec[i]->update(window);
+            closeVec[i]->update(window);
+            addVec[i]->update(window);
             if (buttonVec[i]->isPressed()) {
                 for (size_t j = 0; j < buttonVec.size(); j++) {
                     if (j != i) {
@@ -108,6 +119,8 @@ void runWindow() {   //style none gets rid of titlebar sf::Style::None
         for (size_t i = 0; i < buttonVec.size(); i++)
         {
             buttonVec[i]->render(window);
+            closeVec[i]->render(window);
+            addVec[i]->render(window);
         }
         //render
 

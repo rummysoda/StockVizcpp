@@ -31,6 +31,7 @@ add_library(implot STATIC
         external/implot/implot.cpp
         external/implot/implot_items.cpp
         external/implot/implot_demo.cpp
+        src/rapidcsv.h
 )
 target_include_directories(implot PUBLIC external/implot)
 target_link_libraries(implot PUBLIC ImGui-SFML::ImGui-SFML)
@@ -46,6 +47,8 @@ add_executable(stockvizcpp
         src/stocksgui.cpp
         src/stocksgui.h
         src/TextButton.h
+        src/AddButton.h
+        src/CloseButton.h
 )
 
 target_link_libraries(stockvizcpp

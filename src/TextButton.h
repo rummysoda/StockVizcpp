@@ -9,7 +9,6 @@
 #define ENTER_KEY 13
 #define ESCAPE_KEY 27
 
-enum BUTTON_STATE{IDLE = 0, HOVER = 1, PRESSED = 2, DISABLED = 3};
 
 class TextButton {
 private:
@@ -37,7 +36,7 @@ void inputLogic(int charTyped) {
                 deletelastChar();
             }
         }
-        this->textb.setString(this->text.str() + "_");
+        this->textb.setString(this->text.str() + "|");
     }
 
     void deletelastChar() {
@@ -69,7 +68,7 @@ public:
 		this->textb.setCharacterSize(20);
 
 		 if(isSelected) {
-            this->textb.setString("_");
+            this->textb.setString("|");
         }
         else {
             this->textb.setString("");
@@ -89,7 +88,7 @@ public:
             this->textb.setString(newT);
         }
 		else {
-			this->textb.setString(this->text.str() + "_");
+			this->textb.setString(this->text.str() + "|");
 		}
     }
 
@@ -120,31 +119,33 @@ public:
     // button settings
 	bool isPressed() const {return this->buttonState == PRESSED;}
 	bool isHover() const {return this->buttonState == HOVER;}
+	bool isDisabled() const {return this->buttonState == DISABLED;}
 	void update(const sf::RenderWindow& window) {
 		sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-
-		if(this->shape.getGlobalBounds().contains(mousePos)) {
-			this->shape.setTexture(this->Hover);
-			this->buttonState = HOVER;
-			this->textb.setFillColor(sf::Color::White);
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				//selected
-				this->shape.setTexture(this->Presssed);
-				this->buttonState = PRESSED;
-				this->textb.setFillColor(sf::Color(56,23,216));
-				this->setSelected(true);
+		if(!isDisabled()) {
+			if(this->shape.getGlobalBounds().contains(mousePos)) {
+				this->shape.setTexture(this->Hover);
+				this->buttonState = HOVER;
+				this->textb.setFillColor(sf::Color::White);
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					//selected
+					this->shape.setTexture(this->Presssed);
+					this->buttonState = PRESSED;
+					this->textb.setFillColor(sf::Color(56,23,216));
+					this->setSelected(true);
+				}
 			}
-		}
 			else {
 				this->shape.setTexture(this->Idle);
 				this->buttonState = IDLE;
-					this->textb.setFillColor(sf::Color::Green);
+				this->textb.setFillColor(sf::Color::Green);
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 					this->setSelected(false);
 				}
 				if (!this->shape.getGlobalBounds().contains(mousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {this->setSelected(false);}
 			}
 			// make sure in the while loop to take even for textenetered to set textbox[i]->textb,typedOn(event);
+		}
 	}
 
 	void render(sf::RenderTarget& target){
