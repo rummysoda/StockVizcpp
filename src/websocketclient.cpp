@@ -6,6 +6,8 @@
 #include <fstream>
 #include <sstream>
 
+
+
 std::string readApiKeyFromFile(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -28,9 +30,6 @@ FinnhubWS::FinnhubWS(const std::string &apiKey) : apiKey_(apiKey) {}
 
 FinnhubWS::~FinnhubWS() {
     ioc_.stop();
-    if (ioThread_.joinable()) {
-        ioThread_.join();
-    }
 }
 
 void FinnhubWS::connect() {
@@ -53,9 +52,10 @@ void FinnhubWS::connect() {
         }
     }
 
-void FinnhubWS::subscribe(const std::string& symbol) {
+void FinnhubWS::subscribe(const std::string& symbol,Stock* stock) {
     if (!ws_) return;
-
+    std::lock_guard<std::mutex> lock(wsMutex_);
+    stocks_[symbol] = stock;
     std::string message = R"({"type":"subscribe","symbol":")" + symbol + R"("})";
     ws_->write(net::buffer(message));
     std::cout << "Subscribed to " << symbol << std::endl;
@@ -84,13 +84,12 @@ void FinnhubWS::parseMessage(const std::string& message) {
                 for (auto& trade : data) {
                     std::string symbol = trade["s"];
                     double price = trade["p"];
-                    int64_t timestamp = trade["t"];
-                    double volume = trade["v"];
+                    double timestamp = trade["t"];
 
-                    std::cout << "STOCK: " << symbol << " Price: $" << price << " Volume: " << volume << " Time:" << timestamp << std::endl;
-
-                    if (onPriceUpdate_) {
-                        onPriceUpdate_(symbol, price);
+                    std::cout << "STOCK: " << symbol << " Price: $" << price << " Time:" << timestamp << std::endl;
+                    auto t = stocks_.find(symbol);
+                    if (t != stocks_.end()) {
+                        t->second->addTick(price,timestamp);
                     }
                 }
             }
@@ -101,7 +100,4 @@ void FinnhubWS::parseMessage(const std::string& message) {
     }
 }
 
-void FinnhubWS::setOnPriceUpdate(std::function<void(std::string, float)> callback) {
-    onPriceUpdate_ = callback;
-}
 

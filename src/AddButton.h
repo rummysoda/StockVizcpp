@@ -1,6 +1,7 @@
 #ifndef ADDBUTTON_H
 #define ADDBUTTON_H
 
+#include <boost/intrusive/set.hpp>
 #include <SFML/Graphics.hpp>
 
 #define DELETE_KEY 8
@@ -33,24 +34,33 @@ public:
     bool isPressed() const {return this->buttonState == PRESSED;}
     bool isHover() const {return this->buttonState == HOVER;}
     bool isDisabled() const {return this->buttonState == DISABLED;}
+
+    void setButtonState(BUTTON_STATE state) {
+        this->buttonState = state;
+        switch(state) {
+            case IDLE:     this->shape.setTexture(this->Idle);     break;
+            case HOVER:    this->shape.setTexture(this->Hover);    break;
+            case PRESSED:  this->shape.setTexture(this->Presssed); break;
+            case DISABLED: this->shape.setTexture(this->Disabled); break;
+        }
+    }
+
     void update(const sf::RenderWindow& window) {
+        if (isDisabled()) return;
         sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-        if(!isDisabled()) {
-            if(this->shape.getGlobalBounds().contains(mousePos)) {
-                this->shape.setTexture(this->Hover);
-                this->buttonState = HOVER;
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    this->shape.setTexture(this->Presssed);
-                    this->buttonState = PRESSED;
-                }
-            } else {
-                this->shape.setTexture(this->Idle);
-                this->buttonState = IDLE;
+        if(this->shape.getGlobalBounds().contains(mousePos)) {
+            this->shape.setTexture(this->Hover);
+            this->buttonState = HOVER;
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                this->shape.setTexture(this->Presssed);
+                this->buttonState = PRESSED;
             }
         } else {
-            this->shape.setTexture(this->Disabled);
+            this->shape.setTexture(this->Idle);
+            this->buttonState = IDLE;
         }
+
     }
 
     void render(sf::RenderTarget& target){

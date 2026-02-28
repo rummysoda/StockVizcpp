@@ -4,10 +4,14 @@
 
 #ifndef APICLIENT_H
 #define APICLIENT_H
+#include "Stock.h"
 
 
-void writeStock (std::string& stock);
-void readStock (std::string& stock);
+bool validateSymbol(const std::string& symbol, const std::string& apiKey);
+
+void writeStock(const std::string& symbol);
+void readStock(const std::string& symbol,Stock& stocks);
+void loadStock(const std::string& symbol,Stock& stocks);
 bool Status();
 
 

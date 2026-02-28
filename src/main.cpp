@@ -11,19 +11,16 @@
 
 int main() {
     try {
-        // Start WebSocket client
         std::string apikey = readApiKeyFromFile("apikey.txt");
         FinnhubWS client(apikey);
 
-        client.connect();
-        std::this_thread::sleep_for(std::chrono::seconds(2)); // making sure to let the websocket connection
+        std::thread t([&client]() {
+            client.connect();
+            client.readLoop();
+        });
+        t.detach();
 
-        client.subscribe("AAPL");
-
-        std::cout << "WebSocket connected, checking stocks..." << std::endl;
-
-        runWindow();
-
+        runWindow(client);
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }

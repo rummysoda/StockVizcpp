@@ -12,6 +12,9 @@
 #include <string>
 #include <functional>
 #include <thread>
+#include <mutex>
+#include "Stock.h"
+#include <unordered_map>
 
 namespace beast = boost::beast;
 namespace websocket = beast::websocket;
@@ -24,23 +27,21 @@ std::string readApiKeyFromFile(const std::string& filename);
 class FinnhubWS {
 private:
     std::string apiKey_;
-    std::function<void(std::string, float)> onPriceUpdate_;
     net::io_context ioc_;
     ssl::context ctx_{ssl::context::sslv23_client};
     std::unique_ptr<websocket::stream<ssl::stream<tcp::socket>>> ws_;
-    std::thread ioThread_;
-    std::thread readThread_;
+    std::mutex wsMutex_;
+    std::unordered_map<std::string, Stock*> stocks_;
 
-    void readLoop();
-    void parseMessage(const std::string& message);
+
 
 public:
     FinnhubWS(const std::string& apiKey);
     ~FinnhubWS();
     void connect();
-    void subscribe(const std::string& topic);
-    void setOnPriceUpdate(std::function<void(std::string, float)> callback);
-    void startReading();
+    void subscribe(const std::string& topic, Stock* stock);
+    void readLoop();
+    void parseMessage(const std::string& message);
 };
 
 #endif //WEBSOCKETCLIENT_H

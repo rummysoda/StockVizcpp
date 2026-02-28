@@ -4,6 +4,7 @@
 
 #ifndef WINDOW_H
 #define WINDOW_H
-void runWindow();
+#include "websocketclient.h"
+void runWindow(FinnhubWS& client);
 
 #endif //WINDOW_H

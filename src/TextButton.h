@@ -54,10 +54,10 @@ void inputLogic(int charTyped) {
 public:
 	TextButton(float x, float y) {
 		this->font.loadFromFile("pt-root-ui_vf.ttf");
-		this->Idle.loadFromFile("Bdefault.png");
-		this->Hover.loadFromFile("BHovered.png");
-		this->Presssed.loadFromFile("BPressed.png");
-		this->Disabled.loadFromFile("BDisabled.png");
+		this->Idle.loadFromFile("../interface/TB/buttonDefault.png");
+		this->Hover.loadFromFile("../interface/TB/buttonHovered.png");
+		this->Presssed.loadFromFile("../interface/TB/buttonPressed.png");
+		this->Disabled.loadFromFile("../interface/TB/buttonDisabled.png");
 		this->buttonState = IDLE;
 
 		this->shape.setTexture(this->Idle);
@@ -96,6 +96,11 @@ public:
         return this->text.str();
     }
 
+	void clearText() {
+		this->text.str("");
+		this->textb.setString("");
+	}
+
     void drawTo(sf::RenderWindow &window) {
         window.draw(this->textb);
     }
@@ -120,33 +125,43 @@ public:
 	bool isPressed() const {return this->buttonState == PRESSED;}
 	bool isHover() const {return this->buttonState == HOVER;}
 	bool isDisabled() const {return this->buttonState == DISABLED;}
-	void update(const sf::RenderWindow& window) {
-		sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-		if(!isDisabled()) {
-			if(this->shape.getGlobalBounds().contains(mousePos)) {
-				this->shape.setTexture(this->Hover);
-				this->buttonState = HOVER;
-				this->textb.setFillColor(sf::Color::White);
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					//selected
-					this->shape.setTexture(this->Presssed);
-					this->buttonState = PRESSED;
-					this->textb.setFillColor(sf::Color(56,23,216));
-					this->setSelected(true);
-				}
-			}
-			else {
-				this->shape.setTexture(this->Idle);
-				this->buttonState = IDLE;
-				this->textb.setFillColor(sf::Color::Green);
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-					this->setSelected(false);
-				}
-				if (!this->shape.getGlobalBounds().contains(mousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {this->setSelected(false);}
-			}
-			// make sure in the while loop to take even for textenetered to set textbox[i]->textb,typedOn(event);
+
+	void setButtonState(BUTTON_STATE state) {
+		this->buttonState = state;
+		switch(state) {
+			case IDLE:     this->shape.setTexture(this->Idle);     break;
+			case HOVER:    this->shape.setTexture(this->Hover);    break;
+			case PRESSED:  this->shape.setTexture(this->Presssed); break;
+			case DISABLED: this->shape.setTexture(this->Disabled); break;
 		}
 	}
+	void update(const sf::RenderWindow& window) {
+		if (isDisabled()) return;
+		sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+		if(this->shape.getGlobalBounds().contains(mousePos)) {
+			this->shape.setTexture(this->Hover);
+			this->buttonState = HOVER;
+			this->textb.setFillColor(sf::Color::White);
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				//selected
+				this->shape.setTexture(this->Presssed);
+				this->buttonState = PRESSED;
+				this->textb.setFillColor(sf::Color(56,23,216));
+				this->setSelected(true);
+			}
+		}
+		else {
+			this->shape.setTexture(this->Idle);
+			this->buttonState = IDLE;
+			this->textb.setFillColor(sf::Color(90,63,225));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+				this->setSelected(false);
+			}
+			if (!this->shape.getGlobalBounds().contains(mousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {this->setSelected(false);}
+		}
+		// make sure in the while loop to take even for textenetered to set textbox[i]->textb,typedOn(event);
+	}
+
 
 	void render(sf::RenderTarget& target){
 		target.draw(this->shape);
