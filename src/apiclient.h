@@ -6,11 +6,9 @@
 #define APICLIENT_H
 
 
-
-class apiclient {
-
-};
-
+void writeStock (std::string& stock);
+void readStock (std::string& stock);
+bool Status();
 
 
 #endif //APICLIENT_H

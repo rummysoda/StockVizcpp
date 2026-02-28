@@ -14,7 +14,7 @@
 
 
 void runWindow() {   //style none gets rid of titlebar sf::Style::None
-    sf::RenderWindow window(sf::VideoMode(2560, 1440), "Stock Visualizer");
+    sf::RenderWindow window(sf::VideoMode(1920, 1000), "Stock Visualizer");
     ImGui::SFML::Init(window);
     ImPlot::CreateContext();
 

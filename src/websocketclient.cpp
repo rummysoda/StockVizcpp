@@ -34,13 +34,11 @@ FinnhubWS::~FinnhubWS() {
 }
 
 void FinnhubWS::connect() {
-    ioThread_ = std::thread([this]() {
         try {
             tcp::resolver resolver{ioc_};
             auto results = resolver.resolve("ws.finnhub.io","443");
 
-            ws_ = std::make_unique<websocket::stream<ssl::stream<tcp::socket>>>(
-                net::make_strand(ioc_), ctx_);
+            ws_ = std::make_unique<websocket::stream<ssl::stream<tcp::socket>>>((ioc_), ctx_);
 
             auto& ssl_stream = ws_->next_layer();
             auto& tcp_socket = ssl_stream.next_layer();
@@ -53,8 +51,7 @@ void FinnhubWS::connect() {
         } catch (std::exception const& e) {
             std::cout << "connection failed: " << e.what() << std::endl;
         }
-    });
-}
+    }
 
 void FinnhubWS::subscribe(const std::string& symbol) {
     if (!ws_) return;
@@ -108,8 +105,3 @@ void FinnhubWS::setOnPriceUpdate(std::function<void(std::string, float)> callbac
     onPriceUpdate_ = callback;
 }
 
-void FinnhubWS::startReading() {
-    readThread_ = std::thread([this]() {
-        readLoop();
-    });
-}

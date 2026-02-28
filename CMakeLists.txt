@@ -31,9 +31,13 @@ add_library(implot STATIC
         external/implot/implot.cpp
         external/implot/implot_items.cpp
         external/implot/implot_demo.cpp
-        src/rapidcsv.h
 )
-target_include_directories(implot PUBLIC external/implot)
+
+target_include_directories(implot PUBLIC
+        external/implot
+        ${CMAKE_SOURCE_DIR}/src
+)
+
 target_link_libraries(implot PUBLIC ImGui-SFML::ImGui-SFML)
 
 add_executable(stockvizcpp
@@ -49,6 +53,14 @@ add_executable(stockvizcpp
         src/TextButton.h
         src/AddButton.h
         src/CloseButton.h
+        src/Stock.h
+)
+
+target_include_directories(stockvizcpp PRIVATE
+        ${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/external/implot
+        ${OPENSSL_INCLUDE_DIR}
+        C:/msys64/mingw64/include
 )
 
 target_link_libraries(stockvizcpp
