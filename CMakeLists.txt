@@ -54,6 +54,7 @@ add_executable(stockvizcpp
         src/AddButton.h
         src/CloseButton.h
         src/Stock.h
+        src/ImGuiColor.h
 )
 
 target_include_directories(stockvizcpp PRIVATE

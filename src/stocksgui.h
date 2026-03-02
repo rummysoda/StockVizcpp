@@ -4,7 +4,7 @@
 
 #ifndef STOCKSGUI_H
 #define STOCKSGUI_H
-
+#include "Stock.h"
 namespace MyImPlot {
 
     template <typename T>
@@ -26,6 +26,6 @@ namespace MyImPlot {
 
 } // namespace MyImPlot
 
-void Demo_CustomPlottersAndTooltips();
+void Demo_CustomPlottersAndTooltips(std::vector<StockEntry*>& entries);
 
 #endif //STOCKSGUI_H

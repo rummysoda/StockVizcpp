@@ -8,6 +8,11 @@
 #include <mutex>
 #include <vector>
 #include <string>
+#include <thread>
+#include <openssl/x509v3.h>
+#include "AddButton.h"
+#include "CloseButton.h"
+#include "TextButton.h"
 
 struct Candle {
     double timestamp;
@@ -44,9 +49,30 @@ struct Stock {
             currentCandle.close = price;
         }
     }
+    //need it for the edge case when there is only one row to clear the data i got from the symbol used before
+    void clear() {
+        symbol.clear();
+        open.clear();
+        high.clear();
+        low.clear();
+        close.clear();
+        dates.clear();
+        currentCandle = Candle{};
+    }
 };
 
-
+struct StockEntry {
+    TextButton* textButton;
+    CloseButton* closeButton;
+    AddButton* addButton;
+    Stock stock;
+    bool isActive  = false;
+    bool isLoading = false;
+    bool isInvalid = false;
+    bool exists = false;
+    std::thread loadThread;
+    sf::Clock errorClock;
+};
 
 
 #endif //STOCK_H

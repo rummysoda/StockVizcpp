@@ -7,4 +7,5 @@
 #include "websocketclient.h"
 void runWindow(FinnhubWS& client);
 
+
 #endif //WINDOW_H

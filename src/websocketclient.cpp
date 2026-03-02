@@ -61,6 +61,14 @@ void FinnhubWS::subscribe(const std::string& symbol,Stock* stock) {
     std::cout << "Subscribed to " << symbol << std::endl;
 }
 
+void FinnhubWS::unsubscribe(const std::string& symbol) {
+    if (!ws_) return;
+    std::lock_guard<std::mutex> lock(wsMutex_);
+    std::string message = R"({"type":"unsubscribe","symbol":")" + symbol + R"("})";
+    ws_->write(net::buffer(message));
+    std::cout << "unsubscribed to " << symbol << std::endl;
+}
+
 void FinnhubWS::readLoop() {
     while (true) {
         beast::flat_buffer buffer;

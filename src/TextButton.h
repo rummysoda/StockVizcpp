@@ -53,7 +53,7 @@ void inputLogic(int charTyped) {
 
 public:
 	TextButton(float x, float y) {
-		this->font.loadFromFile("pt-root-ui_vf.ttf");
+		this->font.loadFromFile("../interface/font/AcuminR.ttf");
 		this->Idle.loadFromFile("../interface/TB/buttonDefault.png");
 		this->Hover.loadFromFile("../interface/TB/buttonHovered.png");
 		this->Presssed.loadFromFile("../interface/TB/buttonPressed.png");
@@ -63,7 +63,7 @@ public:
 		this->shape.setTexture(this->Idle);
 		this->shape.setPosition({x,y});
 
-		this->textb.setPosition({x,y+5});
+		this->textb.setPosition({x+5,y+5});
 		this->textb.setFont(this->font);
 		this->textb.setCharacterSize(20);
 
@@ -93,7 +93,11 @@ public:
     }
 
     std::string getText() {
-        return this->text.str();
+        std::string c = this->text.str();
+		for (auto& x :c) {
+			x = toupper(x);
+		}
+		return c;
     }
 
 	void clearText() {
@@ -141,7 +145,7 @@ public:
 		if(this->shape.getGlobalBounds().contains(mousePos)) {
 			this->shape.setTexture(this->Hover);
 			this->buttonState = HOVER;
-			this->textb.setFillColor(sf::Color::White);
+			this->textb.setFillColor(sf::Color(40,23,216));
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 				//selected
 				this->shape.setTexture(this->Presssed);
@@ -166,7 +170,6 @@ public:
 	void render(sf::RenderTarget& target){
 		target.draw(this->shape);
 		target.draw(this->textb);
-
 	}
 
 };

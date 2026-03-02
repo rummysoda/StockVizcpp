@@ -42,6 +42,7 @@ public:
     void subscribe(const std::string& topic, Stock* stock);
     void readLoop();
     void parseMessage(const std::string& message);
+    void unsubscribe(const std::string& symbol);
 };
 
 #endif //WEBSOCKETCLIENT_H
