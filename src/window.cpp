@@ -22,6 +22,10 @@ void runWindow(FinnhubWS& client) {   //style none gets rid of titlebar sf::Styl
     window.requestFocus();
     ImGui::SFML::Init(window);
 
+    sf::Image icon;
+    icon.loadFromFile("../Interface/icon/logo.jpg");
+    window.setIcon(icon.getSize().x,icon.getSize().y,icon.getPixelsPtr());
+
     ImVec4 maincolor = ImVec4(188,176,245,1);
     SetupImGuiStyle(maincolor);
 
