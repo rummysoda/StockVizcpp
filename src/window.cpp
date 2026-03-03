@@ -31,11 +31,10 @@ void runWindow(FinnhubWS& client) {   //style none gets rid of titlebar sf::Styl
     ImGui::SFML::UpdateFontTexture();
     ImPlot::CreateContext();
 
-
     std::string APIKEY = readApiKeyFromFile("apikey.txt");
     window.setFramerateLimit(60);
-    sf::Font font;
-    font.loadFromFile("pt-root-ui_vf.ttf");
+
+    int tickersLimit = 100;
 
     float xx = 1500;
     float yy = 150;
@@ -89,8 +88,7 @@ void runWindow(FinnhubWS& client) {   //style none gets rid of titlebar sf::Styl
             if(entry.addButton->isPressed() && !entry.isLoading && !entry.textButton->getText().empty()) {
 
                 if(entry.isActive) {
-                    if(i>0 && entries[i-1]->closeButton != nullptr)
-                        entries[i-1]->closeButton->setButtonState(DISABLED);
+                    if(i>0 && entries[i-1]->closeButton != nullptr) {entries[i-1]->closeButton->setButtonState(DISABLED);}
                     float newY = yy + entries.size() * 50;
                     StockEntry* newEntry = new StockEntry();
                     newEntry->textButton  = new TextButton(xx, newY);
@@ -125,18 +123,20 @@ void runWindow(FinnhubWS& client) {   //style none gets rid of titlebar sf::Styl
                 // disables previous entry
                 entry.textButton->setButtonState(DISABLED);
                 entry.addButton->setButtonState(DISABLED);
-                entry.closeButton->setButtonState(DISABLED);
+                if(entries.size() < tickersLimit) entry.closeButton->setButtonState(DISABLED);
 
                 //disable closing previous entry
                 if(i>0 && entries[i-1]->closeButton != nullptr) {entries[i-1]->closeButton->setButtonState(DISABLED);}
 
                 // add new entry
-                float newY = yy + entries.size() * 50;
-                StockEntry* newEntry = new StockEntry();
-                newEntry->textButton = new TextButton(xx,newY);
-                newEntry->addButton = new AddButton(xx+150,newY);
-                newEntry->closeButton = new CloseButton(xx + 200,newY);
-                entries.push_back(newEntry);
+                if(entries.size() < tickersLimit) {
+                    float newY = yy + entries.size() * 50;
+                    StockEntry* newEntry = new StockEntry();
+                    newEntry->textButton = new TextButton(xx,newY);
+                    newEntry->addButton = new AddButton(xx+150,newY);
+                    newEntry->closeButton = new CloseButton(xx + 200,newY);
+                    entries.push_back(newEntry);
+                }
 
                 entry.loadThread = std::thread([&entry, symbol, &client]() {
                     loadStock(symbol, entry.stock);
@@ -182,18 +182,15 @@ void runWindow(FinnhubWS& client) {   //style none gets rid of titlebar sf::Styl
             }
         }
         if(entries.size() > 0) {
+            ImGui::Begin("Stock Visualiser");
             Demo_CustomPlottersAndTooltips(entries);
+            ImGui::End();
+            PlotMerged(entries);
         }
-
 
         //render
         window.clear(sf::Color(20,20,20));
-        //window.draw(bg);
-        for(auto& entry : entries) {
-            entry->textButton->render(window);
-            entry->addButton->render(window);
-            if(entry->closeButton != nullptr) {entry->closeButton->render(window);}
-        }
+        ImGui::SFML::Render(window);
         for(auto& entry : entries) {
             if(entry->isInvalid) {
                 if(entry->errorClock.getElapsedTime().asSeconds() < 2.f) {
@@ -209,7 +206,12 @@ void runWindow(FinnhubWS& client) {   //style none gets rid of titlebar sf::Styl
             }
         }
 
-        ImGui::SFML::Render(window);
+        for(auto& entry : entries) {
+            entry->textButton->render(window);
+            entry->addButton->render(window);
+            if(entry->closeButton != nullptr) {entry->closeButton->render(window);}
+        }
+
         window.display();
     }
     for (auto& entry : entries) {delete entry;}

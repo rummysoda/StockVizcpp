@@ -38,36 +38,39 @@ void PlotCandlestick(const char* label_id, const double* xs, const double* opens
     double half_width = count > 1 ? (xs[1] - xs[0]) * width_percent : width_percent;
 
     // custom tool
-    if (ImPlot::IsPlotHovered() && tooltip) {
-        ImPlotPoint mouse   = ImPlot::GetPlotMousePos();
-        mouse.x             = ImPlot::RoundTime(ImPlotTime::FromDouble(mouse.x), ImPlotTimeUnit_Day).ToDouble();
-        float  tool_l       = ImPlot::PlotToPixels(mouse.x - half_width * 1.5, mouse.y).x;
-        float  tool_r       = ImPlot::PlotToPixels(mouse.x + half_width * 1.5, mouse.y).x;
-        float  tool_t       = ImPlot::GetPlotPos().y;
-        float  tool_b       = tool_t + ImPlot::GetPlotSize().y;
-        ImPlot::PushPlotClipRect();
-        draw_list->AddRectFilled(ImVec2(tool_l, tool_t), ImVec2(tool_r, tool_b), IM_COL32(128,128,128,64));
-        ImPlot::PopPlotClipRect();
-        // find mouse location index
-        int idx = BinarySearch(xs, 0, count - 1, mouse.x);
-        // render tool tip (won't be affected by plot clip rect)
-        if (idx != -1) {
-            ImGui::BeginTooltip();
-            char buff[32];
-            ImPlot::FormatDate(ImPlotTime::FromDouble(xs[idx]),buff,32,ImPlotDateFmt_DayMoYr,ImPlot::GetStyle().UseISO8601);
-            ImGui::Text("Day:   %s",  buff);
-            ImGui::Text("Open:  $%.2f", opens[idx]);
-            ImGui::Text("Close: $%.2f", closes[idx]);
-            ImGui::Text("Low:   $%.2f", lows[idx]);
-            ImGui::Text("High:  $%.2f", highs[idx]);
-            ImGui::EndTooltip();
-        }
-    }
+
 
     // begin plot item
      if (ImPlot::BeginItem(label_id)) {
         // override legend icon color
         ImPlot::GetCurrentItem()->Color = IM_COL32(64,64,64,255);
+
+         if (ImPlot::IsPlotHovered() && tooltip) {
+             ImPlotPoint mouse   = ImPlot::GetPlotMousePos();
+             mouse.x             = ImPlot::RoundTime(ImPlotTime::FromDouble(mouse.x), ImPlotTimeUnit_Day).ToDouble();
+             float  tool_l       = ImPlot::PlotToPixels(mouse.x - half_width * 1.5, mouse.y).x;
+             float  tool_r       = ImPlot::PlotToPixels(mouse.x + half_width * 1.5, mouse.y).x;
+             float  tool_t       = ImPlot::GetPlotPos().y;
+             float  tool_b       = tool_t + ImPlot::GetPlotSize().y;
+             ImPlot::PushPlotClipRect();
+             draw_list->AddRectFilled(ImVec2(tool_l, tool_t), ImVec2(tool_r, tool_b), IM_COL32(128,128,128,64));
+             ImPlot::PopPlotClipRect();
+             // find mouse location index
+             int idx = BinarySearch(xs, 0, count - 1, mouse.x);
+             // render tool tip (won't be affected by plot clip rect)
+             if (idx != -1) {
+                 ImGui::BeginTooltip();
+                 char buff[32];
+                 ImPlot::FormatDate(ImPlotTime::FromDouble(xs[idx]),buff,32,ImPlotDateFmt_DayMoYr,ImPlot::GetStyle().UseISO8601);
+                 ImGui::Text("Day:   %s",  buff);
+                 ImGui::Text("Open:  $%.2f", opens[idx]);
+                 ImGui::Text("Close: $%.2f", closes[idx]);
+                 ImGui::Text("Low:   $%.2f", lows[idx]);
+                 ImGui::Text("High:  $%.2f", highs[idx]);
+                 ImGui::EndTooltip();
+             }
+         }
+
         // fit data if requested
         if (ImPlot::FitThisFrame()) {
             for (int i = 0; i < count; ++i) {
@@ -110,21 +113,18 @@ void Demo_CustomPlottersAndTooltips(std::vector<StockEntry*>& entries)  {
     }
 
     static bool tooltip = true;
-    ImGui::Checkbox("Show Tooltip", &tooltip);
     ImGui::SameLine();
+    ImGui::Checkbox("Show Tooltip", &tooltip);
     static ImVec4 bullCol = ImVec4(0.000f, 1.000f, 0.441f, 1.000f);
     static ImVec4 bearCol = ImVec4(0.853f, 0.050f, 0.310f, 1.000f);
-    ImGui::SameLine(); ImGui::ColorEdit4("##Bull", &bullCol.x, ImGuiColorEditFlags_NoInputs);
-    ImGui::SameLine(); ImGui::ColorEdit4("##Bear", &bearCol.x, ImGuiColorEditFlags_NoInputs);
     ImPlot::GetStyle().UseLocalTime = false;
-
 
 
     if (ImPlot::BeginPlot("Candlestick Chart",ImVec2(-1,0))) {
         ImPlot::SetupAxes(nullptr,nullptr,0,ImPlotAxisFlags_AutoFit|ImPlotAxisFlags_RangeFit);
-        //ImPlot::SetupAxesLimits(1546300800, 1571961600, 1250, 1600);
         ImPlot::SetupAxisScale(ImAxis_X1, ImPlotScale_Time);
-        ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, minT, maxT);
+        double padding = 2 * 60 * 60 * 24;
+        ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, minT, maxT + padding);
         ImPlot::SetupAxisZoomConstraints(ImAxis_X1, 60*60*24*14, maxT-minT);
         ImPlot::SetupAxisFormat(ImAxis_Y1, "$%.0f");
         for(auto& entry : entries) {
@@ -137,3 +137,80 @@ void Demo_CustomPlottersAndTooltips(std::vector<StockEntry*>& entries)  {
     }
 }
 
+void PlotMerged(std::vector<StockEntry*>& entries) {
+    std::vector<StockEntry*> active;
+    for (auto& e : entries) {
+        if (e->isActive && !e->stock.dates.empty()) {
+            active.push_back(e);
+        }
+    }
+    if (active.size() < 2) return;
+
+    double startT = -INFINITY;
+    double endT = INFINITY;
+    for (auto& e : active) {
+        std::lock_guard<std::mutex> lock(e->stock.mtx);
+        if (e->stock.dates.front() > startT) startT = e->stock.dates.front();
+        if (e->stock.dates.back() < endT) endT = e->stock.dates.back();
+    }
+    if (startT >= endT) return;
+
+    auto& refDates = active[0]->stock.dates;
+    std::vector<double> indexDates;
+    std::vector<double> indexOpen;
+    std::vector<double> indexHigh;
+    std::vector<double> indexLow;
+    std::vector<double> indexClose;
+
+    for (size_t i = 0; i < refDates.size(); i++) {
+        if (refDates[i] < startT || refDates[i] > endT) {continue;}
+
+        double sumO = 0, sumH = 0, sumL = 0, sumC = 0;
+        int count = 0;
+
+        for (auto& e : active) {
+            std::lock_guard<std::mutex> lock(e->stock.mtx);
+            auto& stock = e->stock;
+
+            size_t idx = 0;
+            double minDiff = INFINITY;
+            // finds closest candle for closest date to first stock.
+            for (size_t j = 0; j < stock.dates.size(); j++) {
+                double diff = std::abs(stock.dates[j] - refDates[i]);
+                if (diff < minDiff) { minDiff = diff; idx = j; }
+            }
+
+            double base = stock.close[0];
+            if (base > 0) {
+                sumO += stock.open[idx];
+                sumH += stock.high[idx];
+                sumL += stock.low[idx];
+                sumC += stock.close[idx];
+                count++;
+            }
+        }
+
+        if (count > 0) {
+            indexDates.push_back(refDates[i]);
+            indexOpen.push_back(sumO / count);
+            indexHigh.push_back(sumH / count);
+            indexLow.push_back(sumL / count);
+            indexClose.push_back(sumC / count);
+        }
+    }
+
+    if (indexDates.empty()) return;
+
+    ImGui::Begin("Merged Ticks"); // seperate window
+    if (ImPlot::BeginPlot("##", ImVec2(-1, 0))) {
+        double padding = 100 * 60 * 60 * 24;
+        ImPlot::SetupAxes(nullptr, nullptr, 0, ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_RangeFit);
+        ImPlot::SetupAxisScale(ImAxis_X1, ImPlotScale_Time);
+        ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, indexDates.front() - padding, indexDates.back() + padding);
+        ImPlot::SetupAxisZoomConstraints(ImAxis_X1, 60*60*24*14, (indexDates.back() + padding) - (indexDates.front() - padding));
+        ImPlot::SetupAxisFormat(ImAxis_Y1, "$%.0f");
+        MyImPlot::PlotCandlestick("Merged", indexDates.data(), indexOpen.data(), indexClose.data(), indexLow.data(), indexHigh.data(), indexDates.size());
+        ImPlot::EndPlot();
+    }
+    ImGui::End();
+}

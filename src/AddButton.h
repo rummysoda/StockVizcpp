@@ -69,4 +69,4 @@ public:
     }
 
 };
-#endif ADDBUTTON_H
+#endif //ADDBUTTON_H

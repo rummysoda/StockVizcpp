@@ -27,5 +27,6 @@ namespace MyImPlot {
 } // namespace MyImPlot
 
 void Demo_CustomPlottersAndTooltips(std::vector<StockEntry*>& entries);
+void PlotMerged(std::vector<StockEntry*>& entries);
 
 #endif //STOCKSGUI_H

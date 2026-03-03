@@ -92,7 +92,7 @@ void FinnhubWS::parseMessage(const std::string& message) {
                 for (auto& trade : data) {
                     std::string symbol = trade["s"];
                     double price = trade["p"];
-                    double timestamp = trade["t"];
+                    double timestamp = trade["t"].get<double>() / 1000; // from ms to seconds
 
                     std::cout << "STOCK: " << symbol << " Price: $" << price << " Time:" << timestamp << std::endl;
                     auto t = stocks_.find(symbol);
