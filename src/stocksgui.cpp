@@ -35,7 +35,15 @@ void PlotCandlestick(const char* label_id, const double* xs, const double* opens
     // get ImGui window DrawList
     ImDrawList* draw_list = ImPlot::GetPlotDrawList();
     // calc real value width
-    double half_width = count > 1 ? (xs[1] - xs[0]) * width_percent : width_percent;
+    double half_width = width_percent;
+    if( count > 1) {
+        double min_gap = xs[1] - xs[0];
+        for (int i = 1; i < count - 1; i++) {
+            double gap =xs[i + 1] - xs[i];
+            if(gap < min_gap) {min_gap = gap;}
+        }
+        half_width = width_percent * min_gap;
+    }
 
     // custom tool
 
