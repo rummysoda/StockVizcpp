@@ -73,16 +73,19 @@ The GUI is built with SFML (window management and input) and Dear ImGui/ImPlot (
     └── stockname.txt             # Stock symbol reference
 ```
 
-## Dependencies
+### Version Notes
 
-|Library|Purpose|
+The imgui-sfml bridge library pins its supported ImGui version, which constrains the versions of both ImGui and ImPlot used in this project. The following versions are required and must be cloned exactly as shown:
+
+| Library | Version |
 |---|---|
-|[SFML](https://github.com/SFML/SFML)|Window and input|
-|[Dear ImGui](https://github.com/ocornut/imgui) + [ImPlot](https://github.com/epezent/implot)|GUI and candlestick charts|
-|[nlohmann/json](https://github.com/nlohmann/json)|JSON parsing|
-|[Boost.Beast](https://github.com/boostorg/beast)|WebSocket client|
-|[OpenSSL](https://github.com/openssl/openssl)|TLS/SSL for secure connections|
-|[yfinance](https://github.com/ranaroussi/yfinance)|Historical stock data (Python)|
+| [Dear ImGui](https://github.com/ocornut/imgui) | `v1.89.9` |
+| [imgui-sfml](https://github.com/SFML/imgui-sfml) | `2.6.x` |
+| [ImPlot](https://github.com/epezent/implot) | `v0.15` |
+| [Boost.Beast](https://github.com/boostorg/beast) | latest |
+
+>**Note:** Using newer versions of ImGui or ImPlot will likely cause compatibility issues with imgui-sfml `2.6.x`. Stick to the pinned versions above.
+
 ## Prerequisites
 - A [Finnhub](https://finnhub.io/) API key (free)
 ## Building
@@ -98,5 +101,5 @@ cmake --build .
 Make sure all C++ dependencies are installed and accessible to CMake. You'll also need Python 3 with yfinance:
 
 ```bash
-pip install yfinance
+pip install -r requirements.txt
 ```

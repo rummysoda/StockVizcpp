@@ -83,7 +83,11 @@ void loadStock(const std::string& symbol,Stock& stock ) {
     std::lock_guard<std::mutex> lock(mtx); // making sure the first api call finishes before adding the second stock symbol to the text file.
 
     writeStock(symbol);
-    system("..\\.venv\\Scripts\\python.exe ../src/fetcher.py");
+    #ifdef _WIN32
+        system("..\\.venv\\Scripts\\python.exe ../src/fetcher.py");
+    #else
+        system("python3 ../src/fetcher.py");
+    #endif
     readStock(symbol,stock);
 
 }
