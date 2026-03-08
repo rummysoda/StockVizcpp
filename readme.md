@@ -2,8 +2,7 @@
 A desktop stock visualizer built in C++ that displays interactive candlestick charts and a merged price-weighted index
 
 ## Demo
-
-https://github.com/rummysoda/StockVizcpp/tree/main/docs/demonstration.mp4
+https://github.com/user-attachments/assets/e13eecbb-6423-4480-aea4-375a908b2f6e
 
 ## Features
 - OHLC candlestick charts rendered with ImPlot, with hover tooltips showing each day's open, close, low, and high
