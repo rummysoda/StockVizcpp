@@ -23,10 +23,10 @@ private:
 
 public:
     CloseButton(float x, float y) {
-        this->Idle.loadFromFile("../interface/cb/closeMain.png");
-        this->Hover.loadFromFile("../interface/cb/closeHovered.png");
-        this->Presssed.loadFromFile("../interface/cb/closePressed.png");
-        this->Disabled.loadFromFile("../interface/cb/closeDisabled.png");
+        this->Idle.loadFromFile("../Interface/cb/closeMain.png");
+        this->Hover.loadFromFile("../Interface/cb/closeHovered.png");
+        this->Presssed.loadFromFile("../Interface/cb/closePressed.png");
+        this->Disabled.loadFromFile("../Interface/cb/closeDisabled.png");
         this->buttonState = IDLE;
         this->shape.setTexture(this->Idle);
         this->shape.setPosition({x, y});

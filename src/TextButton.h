@@ -53,11 +53,11 @@ void inputLogic(int charTyped) {
 
 public:
 	TextButton(float x, float y) {
-		this->font.loadFromFile("../interface/font/AcuminR.ttf");
-		this->Idle.loadFromFile("../interface/TB/buttonDefault.png");
-		this->Hover.loadFromFile("../interface/TB/buttonHovered.png");
-		this->Presssed.loadFromFile("../interface/TB/buttonPressed.png");
-		this->Disabled.loadFromFile("../interface/TB/buttonDisabled.png");
+		this->font.loadFromFile("../Interface/font/AcuminR.ttf");
+		this->Idle.loadFromFile("../Interface/TB/buttonDefault.png");
+		this->Hover.loadFromFile("../Interface/TB/buttonHovered.png");
+		this->Presssed.loadFromFile("../Interface/TB/buttonPressed.png");
+		this->Disabled.loadFromFile("../Interface/TB/buttonDisabled.png");
 		this->buttonState = IDLE;
 
 		this->shape.setTexture(this->Idle);
