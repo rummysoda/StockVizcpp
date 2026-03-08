@@ -15,7 +15,7 @@
 #include "stocksgui.h"
 #include "TextButton.h"
 #include <unordered_set>
-#include "imGuiColor.h"
+#include "ImGuiColor.h"
 
 void runWindow(FinnhubWS& client) {   //style none gets rid of titlebar sf::Style::None
     sf::RenderWindow window(sf::VideoMode(1920, 1000), "Stock Visualizer");

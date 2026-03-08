@@ -29,7 +29,7 @@ struct Stock {
     std::vector<double> dates;
     Candle currentCandle;
     std::mutex mtx;
-    int candleIntervalSeconds = 60;
+    int candleIntervalSeconds = 86400;
     Stock() {}
 
     void addTick(float price, double timestamp) {
