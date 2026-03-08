@@ -60,7 +60,7 @@ void runWindow(FinnhubWS& client) {   //style none gets rid of titlebar sf::Styl
     Background.loadFromFile("../Interface/BG/bg2.png");
     sf::Sprite bg(Background);
     sf::Texture errorTexture;
-    errorTexture.loadFromFile("../interface/WarningB/NotFound.png");
+    errorTexture.loadFromFile("../Interface/WarningB/NotFound.png");
     sf::Sprite errorSprite(errorTexture);
     errorSprite.setScale(0.4f, 0.4f);
 

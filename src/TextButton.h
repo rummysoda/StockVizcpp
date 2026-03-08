@@ -56,7 +56,7 @@ public:
 		this->font.loadFromFile("../Interface/font/AcuminR.ttf");
 		this->Idle.loadFromFile("../Interface/TB/buttonDefault.png");
 		this->Hover.loadFromFile("../Interface/TB/buttonHovered.png");
-		this->Presssed.loadFromFile("../Interface/TB/buttonPressed.png");
+		this->Presssed.loadFromFile("../Interface/TB/buttonpressed.png");
 		this->Disabled.loadFromFile("../Interface/TB/buttonDisabled.png");
 		this->buttonState = IDLE;
 

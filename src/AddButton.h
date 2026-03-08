@@ -21,10 +21,10 @@ private:
 
 public:
     AddButton(float x, float y) {
-        this->Idle.loadFromFile("plusMain.png");
-        this->Hover.loadFromFile("plusHover.png");
-        this->Presssed.loadFromFile("plusClicked.png");
-        this->Disabled.loadFromFile("plusDisabled.png");
+        this->Idle.loadFromFile("../Interface/AB/plusMain.png");
+        this->Hover.loadFromFile("../Interface/AB/plusHover.png");
+        this->Presssed.loadFromFile("../Interface/AB/plusClicked.png");
+        this->Disabled.loadFromFile("../Interface/AB/plusDisabled.png");
         this->buttonState = IDLE;
         this->shape.setTexture(this->Idle);
         this->shape.setPosition({x, y});
