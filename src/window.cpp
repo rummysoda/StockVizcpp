@@ -92,7 +92,9 @@ void runWindow(FinnhubWS& client) {   //style none gets rid of titlebar sf::Styl
             if(entry.addButton->isPressed() && !entry.isLoading && !entry.textButton->getText().empty()) {
 
                 if(entry.isActive) {
-                    if(i>0 && entries[i-1]->closeButton != nullptr) {entries[i-1]->closeButton->setButtonState(DISABLED);}
+                    for(size_t j = 0; j <= i; j++) {
+                        if(entries[j]->closeButton != nullptr) entries[j]->closeButton->setButtonState(DISABLED);
+                    }
                     float newY = yy + entries.size() * 50;
                     StockEntry* newEntry = new StockEntry();
                     newEntry->textButton  = new TextButton(xx, newY);
